@@ -45,7 +45,7 @@ class Heart(pygame.sprite.Sprite):
         current_life_status = life_status
         positions = [(10, 10), (70, 10), (130, 10), (190, 10), (250, 10)]
         for position in positions:
-            if current_life_status == 1:
+            if current_life_status == 0:
                 screen.blit(self.image_list[1], position)
             else:
                 screen.blit(self.image_list[0], position)
@@ -53,6 +53,8 @@ class Heart(pygame.sprite.Sprite):
             current_life_status += -1
             if current_life_status < 0:
                 current_life_status = 0
+
+
 
 class Boss(pygame.sprite.Sprite):
 
