@@ -14,6 +14,7 @@ clock = pygame.time.Clock()
 scale = 0.8
 moving_left = False
 moving_right = False
+life_status = 5
 
 
 class Background(pygame.sprite.Sprite):
@@ -26,6 +27,32 @@ class Background(pygame.sprite.Sprite):
     def draw(self):
         screen.blit(self.image, (0, 0))
 
+
+class Heart(pygame.sprite.Sprite):
+    def __init__(self, scale):
+        pygame.sprite.Sprite.__init__(self)
+
+        img_1 = pygame.image.load('graphics/heart_1.png').convert_alpha()
+        # img_1 = pygame.transform.scale(img_1,
+        #                                (int(img_1.get_width() * scale * 1.2), int(img_1.get_height() * scale * 1.2)))
+
+        img_2 = pygame.image.load('graphics/heart_2.png').convert_alpha()
+        # img_2 = pygame.transform.scale(img_2,
+        #                                (int(img_2.get_width() * scale * 1.2), int(img_2.get_height() * scale * 1.2)))
+        self.image_list = [img_1, img_2]
+
+    def draw(self, life_status):
+        current_life_status = life_status
+        positions = [(10, 10), (70, 10), (130, 10), (190, 10), (250, 10)]
+        for position in positions:
+            if current_life_status == 1:
+                screen.blit(self.image_list[1], position)
+            else:
+                screen.blit(self.image_list[0], position)
+
+            current_life_status += -1
+            if current_life_status < 0:
+                current_life_status = 0
 
 class Boss(pygame.sprite.Sprite):
 
@@ -114,21 +141,12 @@ class Player(pygame.sprite.Sprite):
             self.rect.right = int(SCREEN_WIDTH / 2)
 
         screen.blit(pygame.transform.flip(self.image, self.flip, False), self.rect)
-        #         if player_rect.top < 0:
-        #             player_rect.top = 0
-
-
-        # player_walk_1 = pygame.image.load('graphics/player_1.png').convert_alpha()
-        #             player_walk_2 = pygame.image.load('graphics/player_2.png').convert_alpha()
-        #             player_walk = [player_walk_1, player_walk_2]
-        #             self.player_index += 0.1
-        #             if self.player_index >= len(player_walk):
-        #                 self.player_index = 0
-        #             player_surface = player_walk[int(self.player_index)]
 
 
 # create background
 bg = Background()
+
+hp = Heart(scale)
 
 # create boss
 boss = Boss(scale)
@@ -143,6 +161,9 @@ while run:
 
     # draw background
     bg.draw()
+
+    # draw hp hearts
+    hp.draw(life_status)
 
     # draw boss
     boss.draw()
