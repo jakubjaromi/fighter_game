@@ -97,9 +97,23 @@ class Player(pygame.sprite.Sprite):
     def draw(self):
         self.gravity += 1
         self.rect.y += self.gravity
-        if self.rect.bottom >= SCREEN_HEIGHT:
-            self.rect.bottom = SCREEN_HEIGHT - 100
 
+        # limit for bottom value
+        if self.rect.bottom >= int(SCREEN_HEIGHT - self.image.get_height()):
+            self.rect.bottom = int(SCREEN_HEIGHT - self.image.get_height())
+
+        # limit for top value
+        if self.rect.top < 0:
+            self.rect.top = 0
+
+        # limit for left value
+        if self.rect.left < 0:
+            self.rect.left = 0
+
+        if self.rect.right > int(SCREEN_WIDTH / 2):
+            self.rect.right = int(SCREEN_WIDTH / 2)
+
+        screen.blit(pygame.transform.flip(self.image, self.flip, False), self.rect)
         #         if player_rect.top < 0:
         #             player_rect.top = 0
 
