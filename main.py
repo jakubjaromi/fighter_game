@@ -24,6 +24,8 @@ easy_arrow = ' <'
 medium_arrow = ''
 hard_arrow = ''
 max_fireballs = 3
+boss_hp = 10000
+
 
 class Background(pygame.sprite.Sprite):
 
@@ -70,7 +72,6 @@ class Boss(pygame.sprite.Sprite):
         self.cool_down_count = 0
         self.image_index = 0
         self.image_fireball_index = 0
-        self.current_hp = 10000
         self.fireball_list = list()
 
         # img = pygame.image.load('graphics/boss_3.png').convert_alpha()
@@ -101,6 +102,8 @@ class Boss(pygame.sprite.Sprite):
         self.rect.center = (x, y)
 
     def draw(self):
+        global boss_hp
+
         # draw boss
         self.image_index += 0.03
         if self.image_index >= len(self.image_list):
@@ -109,7 +112,7 @@ class Boss(pygame.sprite.Sprite):
         screen.blit(self.image, self.rect)
 
         # draw boss's hp
-        text_hp = boss_font.render(f'Boss HP: {self.current_hp}/10000', False, 'White').convert()
+        text_hp = boss_font.render(f'Boss HP: {boss_hp}/10000', False, 'White').convert()
         screen.blit(text_hp, (SCREEN_WIDTH - 400, 25))
 
         # draw boss's fireballs
@@ -325,6 +328,33 @@ class Hero(pygame.sprite.Sprite):
         elif self.cool_down_count > 0:
             self.cool_down_count += 1
 
+    def check_axe_hit(self, rect_boss):
+        global boss_hp
+        global game_active
+
+        temp_thrown_axe_list = list()
+        if self.thrown_axe_list:
+            for thrown_axe in self.thrown_axe_list:
+                current_thrown_axe_x = thrown_axe[0]
+                current_thrown_axe_y = thrown_axe[1]
+                current_thrown_axe_direction = thrown_axe[2]
+                current_thrown_axe_index = thrown_axe[3]
+                image_axe = self.image_axe_list[int(current_thrown_axe_index)]
+
+                rect_axe = image_axe.get_rect()
+                rect_axe.x = current_thrown_axe_x
+                rect_axe.y = current_thrown_axe_y
+
+                if rect_axe.colliderect(rect_boss):
+                    boss_hp = boss_hp - random.randint(50, 100)
+                    if boss_hp < 0:
+                        game_active = False
+                else:
+                    temp_thrown_axe_list.append([current_thrown_axe_x, current_thrown_axe_y,
+                                                 current_thrown_axe_direction, current_thrown_axe_index])
+
+        self.thrown_axe_list = temp_thrown_axe_list.copy()
+
 
 class Menu(pygame.sprite.Sprite):
 
@@ -423,6 +453,7 @@ while run:
 
         if game_active:
             boss.check_fireball_hit(hero.rect)
+            hero.check_axe_hit(boss.rect)
 
             # draw hp hearts
             hp.draw()
