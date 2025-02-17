@@ -19,6 +19,7 @@ moving_right = False
 moving_attack = False
 life_status = 5
 game_init = True
+game_active = True
 easy_arrow = ' <'
 medium_arrow = ''
 hard_arrow = ''
@@ -344,13 +345,13 @@ class Menu(pygame.sprite.Sprite):
 
     @staticmethod
     def draw_win():
-        text_win = menu_font.render(f'You WIN! Do you want to try again? (press y/Y)', False, 'White').convert()
-        screen.blit(text_win, (int(SCREEN_WIDTH / 2), int(SCREEN_HEIGHT / 2)))
+        text_win = menu_font.render(f'You WIN! Do you want to try again? (press Y)', False, 'Black').convert()
+        screen.blit(text_win, (int(SCREEN_WIDTH / 2) - 575, int(SCREEN_HEIGHT / 2) - 100))
 
     @staticmethod
     def draw_lose():
-        text_lose = menu_font.render(f'You LOST! Do you want to try again? (press y/Y)', False, 'White').convert()
-        screen.blit(text_lose, (int(SCREEN_WIDTH / 2), int(SCREEN_HEIGHT / 2)))
+        text_lose = menu_font.render(f'You LOST! Do you want to try again? (press Y)', False, 'Black').convert()
+        screen.blit(text_lose, (int(SCREEN_WIDTH / 2) - 575, int(SCREEN_HEIGHT / 2) - 100))
 
 
 # create background
@@ -420,40 +421,65 @@ while run:
                     game_init = False
     else:
 
-        boss.check_fireball_hit(hero.rect)
+        if game_active:
+            boss.check_fireball_hit(hero.rect)
 
-        # draw hp hearts
-        hp.draw()
+            # draw hp hearts
+            hp.draw()
 
-        # draw boss
-        boss.draw()
+            if life_status == 0:
+                game_active = False
 
-        # draw hero
-        hero.draw(moving_attack)
-        hero.move()
+            # draw boss
+            boss.draw()
 
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                exit()
-                pygame.quit()
+            # draw hero
+            hero.draw(moving_attack)
+            hero.move()
 
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_LEFT:
-                    moving_left = True
-                if event.key == pygame.K_RIGHT:
-                    moving_right = True
-                if event.key == pygame.K_LALT:
-                    hero.jump()
-                if event.key == pygame.K_LSHIFT:
-                    moving_attack = True
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    exit()
+                    pygame.quit()
 
-            if event.type == pygame.KEYUP:
-                if event.key == pygame.K_LEFT:
-                    moving_left = False
-                if event.key == pygame.K_RIGHT:
-                    moving_right = False
-                if event.key == pygame.K_LSHIFT:
-                    moving_attack = False
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_LEFT:
+                        moving_left = True
+                    if event.key == pygame.K_RIGHT:
+                        moving_right = True
+                    if event.key == pygame.K_LALT:
+                        hero.jump()
+                    if event.key == pygame.K_LSHIFT:
+                        moving_attack = True
+
+                if event.type == pygame.KEYUP:
+                    if event.key == pygame.K_LEFT:
+                        moving_left = False
+                    if event.key == pygame.K_RIGHT:
+                        moving_right = False
+                    if event.key == pygame.K_LSHIFT:
+                        moving_attack = False
+        else:
+            if life_status == 0:
+                Menu.draw_lose()
+            else:
+                Menu.draw_win()
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    exit()
+                    pygame.quit()
+
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_y:
+                        hero.positioning(int(hero.image.get_width() / 2) + 100,
+                                         int(SCREEN_HEIGHT - hero.image.get_height()) - 45)
+                        moving_attack = False
+                        moving_right = False
+                        moving_left = False
+                        life_status = 5
+                        game_init = True
+                        game_active = True
 
     # update everything
     pygame.display.update()
