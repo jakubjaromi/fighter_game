@@ -305,14 +305,14 @@ class Hero(pygame.sprite.Sprite):
                 current_thrown_axe_y = thrown_axe[1]
                 current_thrown_axe_direction = thrown_axe[2]
                 current_thrown_axe_index = thrown_axe[3]
-                current_thrown_axe_index += 0.3
+                current_thrown_axe_index += 0.1
                 if current_thrown_axe_index >= len(self.image_axe_list):
                     current_thrown_axe_index = 0
                 image_axe = self.image_axe_list[int(current_thrown_axe_index)]
 
                 rect_axe = image_axe.get_rect()
-                rect_axe.x = 8 * current_thrown_axe_direction + current_thrown_axe_x
-                current_thrown_axe_x = 8 * current_thrown_axe_direction + current_thrown_axe_x
+                rect_axe.x = 6 * current_thrown_axe_direction + current_thrown_axe_x
+                current_thrown_axe_x = 6 * current_thrown_axe_direction + current_thrown_axe_x
                 rect_axe.y = current_thrown_axe_y
                 screen.blit(image_axe, rect_axe)
 
