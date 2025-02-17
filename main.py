@@ -265,7 +265,7 @@ class Hero(pygame.sprite.Sprite):
         self.image = self.image_list[0]
         self.gravity = -15
 
-    def draw(self, moving_attack):
+    def draw(self):
         self.gravity += 1
         self.rect.y += self.gravity
 
@@ -465,7 +465,7 @@ while run:
             boss.draw()
 
             # draw hero
-            hero.draw(moving_attack)
+            hero.draw()
             hero.move()
 
             for event in pygame.event.get():
@@ -515,5 +515,3 @@ while run:
     # update everything
     pygame.display.update()
     clock.tick(60)
-
-
